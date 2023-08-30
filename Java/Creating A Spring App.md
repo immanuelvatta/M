@@ -1,4 +1,4 @@
-# Creating A Spring App
+# Creating A Spring App 
 
 ### Step 1
 - Ctrl + Shift + P (in vscode)
