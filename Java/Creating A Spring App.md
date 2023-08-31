@@ -50,6 +50,12 @@
 
 ```
 
+- to run the project use the following command
+
+```bash
+mvn clean spring-boot:run
+```
+
 ### (JSP)
 
 - create a folder in main called webapp(folder name lower-case)
@@ -94,5 +100,8 @@ public class TestController {
 }
 
 ```
+
+
+
 
 
