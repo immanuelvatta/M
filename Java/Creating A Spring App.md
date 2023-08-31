@@ -60,6 +60,14 @@ mvn clean spring-boot:run
 
 - create a folder in main called webapp(folder name lower-case)
 - inside webapp write the jsp file (example demo.jsp)
+- in our pom.xml file, add the following dependencies:
+
+```xml
+        <dependency>
+                <groupId>org.apache.tomcat.embed</groupId>
+                <artifactId>tomcat-embed-jasper</artifactId>
+        </dependency>
+```
 
 -add this to jsp file (in this example we have bootstrap link)
 ```html
