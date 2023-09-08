@@ -126,7 +126,7 @@ spring.mvc.hiddenmethod.filter.enabled=true
               - main.css (📃)
 
 ### Boilerplate
-#### [HomeController.java]((./src/main/webapp/WEB-INF/index.jsp))
+#### [index.jsp]((./src/main/webapp/WEB-INF/index.jsp))
 
 ```html
 
@@ -481,7 +481,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
 
 
-#### [LoginUser.java]((./src/main/java/com/example/beltexam/services/UserService.java))
+#### [UserService.java]((./src/main/java/com/example/beltexam/services/UserService.java))
 --do `alt+ shift+ o` to pull in the imports for the code below
 ```java
 package com.example.beltexam.services;
