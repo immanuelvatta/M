@@ -38,7 +38,7 @@ touch controllers/NameOfModelController.java models/NameOfModel.java repositorie
 - Three minor configuration streps before we can pass data from controller to the .jsp file.
 
   1. Create the `src/main/webapp`</mark> folder if it does not exist
-  2. Create the `src/main/webapp/WEB-INF` folder
+  2. Create the [`src/main/webapp/WEB-INF`](./src/main/webapp/WEB-INF/index.jsp) folder
   3. Edit the `src/main/resources/applications.properties` file to contain the following code:
 ```
 spring.mvc.view.prefix=/WEB-INF/
