@@ -54,6 +54,6 @@ module.exports = {
 - after you save your .jsp file, you need to run this command
 
 ```bash
-npx tailwindcss -i src/main/resources/static/css/main.css -o src/main/resources/static/css/style.css
+npx tailwindcss -i src/main/resources/static/css/main.css -o src/main/resources/static/css/style.css --watch
 ```
 Add more classes to mix and match your page style
