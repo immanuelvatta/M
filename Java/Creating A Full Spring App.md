@@ -126,7 +126,7 @@ spring.mvc.hiddenmethod.filter.enabled=true
               - main.css (📃)
 
 ### Boilerplate
-#### JSP
+####  JSP
 ```html
 
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
@@ -155,6 +155,328 @@ spring.mvc.hiddenmethod.filter.enabled=true
 
 ```
 
+
+#### [HomeController.java]((./src/main/java/com/example/beltexam/controllers/HomeController.java))
+
+--do `alt+ shift+ o` to pull in the imports for the code below
+```java
+package com.example.beltexam.controllers;
+
+@Controller
+public class HomeController {
+    
+    // Add once service is implemented:
+    @Autowired
+    UserService userService;
+    
+    @GetMapping("/")
+    public String index(Model model) {
+    
+        // Bind empty User and LoginUser objects to the JSP
+        // to capture the form input
+        model.addAttribute("newUser", new User());
+        model.addAttribute("newLogin", new LoginUser());
+        return "index.jsp";
+    }
+    
+    @PostMapping("/register")
+    public String register(@Valid @ModelAttribute("newUser") User newUser, 
+            BindingResult result, Model model, HttpSession session) {
+        
+        // TO-DO Later -- call a register method in the service 
+        User user = userService.register(newUser, result);
+        // to do some extra validations and create a new user!
+        
+        if(result.hasErrors()) {
+            // Be sure to send in the empty LoginUser before 
+            // re-rendering the page.
+            model.addAttribute("newLogin", new LoginUser());
+            return "index.jsp";
+        }
+        
+        // No errors! 
+        // TO-DO Later: Store their ID from the DB in session, 
+        session.setAttribute("user_id", user.getId());
+        // in other words, log them in.
+    
+        return "redirect:/home";
+    }
+    
+    @PostMapping("/login")
+    public String login(@Valid @ModelAttribute("newLogin") LoginUser newLogin, 
+            BindingResult result, Model model, HttpSession session) {
+        
+        // Add once service is implemented:
+        User user = userService.login(newLogin, result);
+    
+        if(result.hasErrors()) {
+            model.addAttribute("newUser", new User());
+            return "index.jsp";
+        }
+        session.setAttribute("user_id", user.getId());
+    
+        // No errors! 
+        // TO-DO Later: Store their ID from the DB in session, 
+        // in other words, log them in.
+    
+        return "redirect:/home";
+    }
+
+    @GetMapping("/home")
+    public String homePage(Model model, HttpSession session) {
+
+        if(session.getAttribute("user_id")==null) {
+            return "redirect:/";
+        } else {
+            User user = userService.getUserById((Long) session.getAttribute("user_id"));
+            model.addAttribute("user", user);
+            return "home.jsp";
+        }
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session){
+        session.invalidate();
+        return "redirect:/";
+    }
+    
+}
+
+```
+#### [User.java]((./src/main/java/com/example/beltexam/models/User.java))
+
+--do `alt+ shift+ o` to pull in the imports for the code below
+
+```java
+package com.example.beltexam.models;
+
+@Entity
+@Table(name = "users")
+public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @NotEmpty(message = "Username is required!")
+    @Size(min = 3, max = 30, message = "Username must be between 3 and 30 characters")
+    private String userName;
+
+    @NotEmpty(message = "Email is required!")
+    @Email(message = "Please enter a valid email!")
+    private String email;
+
+    @NotEmpty(message = "Password is required!")
+    @Size(min = 8, max = 128, message = "Password must be between 8 and 128 characters")
+    private String password;
+
+    @Transient
+    @NotEmpty(message = "Confirm Password is required!")
+    @Size(min = 8, max = 128, message = "Confirm Password must be between 8 and 128 characters")
+    private String confirm;
+
+    // This will not allow the createdAt column to be updated after creation
+    @Column(updatable = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date createdAt;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date updatedAt;
+
+    public User() {
+    }
+
+    public User(Long id, String userName, String email, String password, String confirm, Date createdAt,
+            Date updatedAt) {
+        this.id = id;
+        this.userName = userName;
+        this.email = email;
+        this.password = password;
+        this.confirm = confirm;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getUserName() {
+        return this.userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getEmail() {
+        return this.email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return this.password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getConfirm() {
+        return this.confirm;
+    }
+
+    public void setConfirm(String confirm) {
+        this.confirm = confirm;
+    }
+
+    public Date getCreatedAt() {
+        return this.createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return this.updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    // other getters and setters removed for brevity
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = new Date();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = new Date();
+    }
+
+}
+
+```
+#### [LoginUser.java]((./src/main/java/com/example/beltexam/models/LoginUser.java))
+
+--do `alt+ shift+ o` to pull in the imports for the code below
+```java
+package com.example.beltexam.models;
+
+public class LoginUser {
+    
+    @NotEmpty(message="Email is required!")
+    @Email(message="Please enter a valid email!")
+    private String email;
+    
+    @NotEmpty(message="Password is required!")
+    @Size(min=8, max=128, message="Password must be between 8 and 128 characters")
+    private String password;
+    
+    public LoginUser() {}
+
+
+    public String getEmail() {
+        return this.email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return this.password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+}
+```
+
+#### [UserRepository.java]((./src/main/java/com/example/beltexam/repositories/UserRepository.java))
+--do `alt+ shift+ o` to pull in the imports for the code below
+
+```java
+package com.example.beltexam.repositories;
+
+@Repository
+public interface UserRepository extends CrudRepository<User, Long> {
+    
+    Optional<User> findByEmail(String email);
+    
+}
+```
+
+
+
+#### [LoginUser.java]((./src/main/java/com/example/beltexam/services/UserService.java))
+--do `alt+ shift+ o` to pull in the imports for the code below
+```java
+package com.example.beltexam.services;
+
+@Service
+public class UserService {
+    
+    @Autowired
+    UserRepository userRepository;
+    
+    // TO-DO: Write register and login methods!
+    public User register(User newUser, BindingResult result) {
+        
+        // TO-DO - Reject values or register if no errors:
+        if(userRepository.findByEmail(newUser.getEmail()).isPresent()) {
+            result.rejectValue("email", "Unique", "Email is already in use!");
+        }
+        // Reject if email is taken (present in database)
+        // Reject if password doesn't match confirmation
+        if (!newUser.getPassword().equals(newUser.getConfirm())) { // Check to make sure password matches confirm
+            // password
+            result.rejectValue("confirm", "Matches", "The Confirm Password must match Password!");
+        }
+        
+        // Return null if result has errors
+        if(result.hasErrors()) {
+            return null;
+        }
+        String hashed = BCrypt.hashpw(newUser.getPassword(), BCrypt.gensalt());
+        newUser.setPassword(hashed);
+        // Hash and set password, save user to database
+        return userRepository.save(newUser);
+    }
+
+    public User login(LoginUser newLoginObject, BindingResult result) {
+
+        Optional<User> user = userRepository.findByEmail(newLoginObject.getEmail());
+
+        if (!user.isPresent()) {
+            result.rejectValue("email", "Unique", "Email not found bub");
+        } else if (!BCrypt.checkpw(newLoginObject.getPassword(), user.get().getPassword())) {
+            result.rejectValue("password", "Unique", "Password no good bub...");
+        }
+
+        if(result.hasErrors()) {
+            return null;
+        }
+
+        return user.get();
+    }
+
+    public User getUserById(Long attribute) {
+        return userRepository.findById(attribute).orElse(null);
+    }
+}
+```
 ### Final Step: to run the application
 ```bash
 mvn clean spring-boot:run
