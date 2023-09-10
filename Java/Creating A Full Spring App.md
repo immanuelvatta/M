@@ -126,7 +126,7 @@ spring.mvc.hiddenmethod.filter.enabled=true
               - main.css (📃)
 
 ### Boilerplate
-#### [index.jsp]((./src/main/webapp/WEB-INF/index.jsp))
+#### [index.jsp](./src/main/webapp/WEB-INF/index.jsp)
 
 ```html
 
@@ -217,7 +217,7 @@ spring.mvc.hiddenmethod.filter.enabled=true
 ```
 
 
-#### [HomeController.java]((./src/main/java/com/example/beltexam/controllers/HomeController.java))
+#### [HomeController.java](./src/main/java/com/example/beltexam/controllers/HomeController.java)
 
 --do `alt+ shift+ o` to pull in the imports for the code below
 ```java
@@ -304,7 +304,7 @@ public class HomeController {
 }
 
 ```
-#### [User.java]((./src/main/java/com/example/beltexam/models/User.java))
+#### [User.java](./src/main/java/com/example/beltexam/models/User.java)
 
 --do `alt+ shift+ o` to pull in the imports for the code below
 
@@ -427,7 +427,7 @@ public class User {
 }
 
 ```
-#### [LoginUser.java]((./src/main/java/com/example/beltexam/models/LoginUser.java))
+#### [LoginUser.java](./src/main/java/com/example/beltexam/models/LoginUser.java)
 
 --do `alt+ shift+ o` to pull in the imports for the code below
 ```java
@@ -465,7 +465,7 @@ public class LoginUser {
 }
 ```
 
-#### [UserRepository.java]((./src/main/java/com/example/beltexam/repositories/UserRepository.java))
+#### [UserRepository.java](./src/main/java/com/example/beltexam/repositories/UserRepository.java)
 --do `alt+ shift+ o` to pull in the imports for the code below
 
 ```java
@@ -481,7 +481,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
 
 
-#### [UserService.java]((./src/main/java/com/example/beltexam/services/UserService.java))
+#### [UserService.java](./src/main/java/com/example/beltexam/services/UserService.java)
 --do `alt+ shift+ o` to pull in the imports for the code below
 ```java
 package com.example.beltexam.services;
